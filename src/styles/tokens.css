@@ -1,0 +1,39 @@
+/* src/styles/tokens.css
+   Design tokens — unica fonte di verità per colori, font, spacing.
+   Importato una volta sola nel Layout. */
+
+@import url('https://fonts.googleapis.com/css2?family=Cormorant+Garamond:ital,wght@0,300;0,400;1,300;1,400&display=swap');
+
+:root {
+  /* Palette */
+  --gold:          #c9a96e;
+  --gold-light:    #e2c99a;
+  --ivory:         #f5f0e8;
+  --bg:            #0a0a0a;
+  --surface:       #141414;
+  --border:        #222222;
+  --text:          #e5e2dc;
+  --text-muted:    #6b6760;
+  --text-soft:     #a09c95;
+
+  /* Tipografia */
+  --font-display:  'Cormorant Garamond', Georgia, serif;
+  --font-body:     'Inter Variable', sans-serif;
+
+  /* Navbar — altezza reale, usata per compensare il fixed */
+  --navbar-h: 5rem;
+
+  /* Spaziatura sezioni */
+  --section-px:  2.5rem;
+  --section-py:  10rem;
+  --max-w:       1400px;
+  --max-w-text:  1200px;
+}
+
+@media (max-width: 640px) {
+  :root {
+    --navbar-h:   4rem;
+    --section-px: 1.5rem;
+    --section-py: 6rem;
+  }
+}

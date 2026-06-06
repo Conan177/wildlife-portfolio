@@ -1,0 +1,36 @@
+/* ---- Header categoria ---- */
+  .cat-header {
+    padding: calc(var(--navbar-h) + 4rem) var(--section-px) 3rem;
+    max-width: var(--max-w);
+    margin: 0 auto;
+  }
+
+  .cat-header__back {
+    text-decoration: none;
+    transition: color 0.2s;
+    display: inline-block;
+    margin-bottom: 1.5rem;
+  }
+  .cat-header__back:hover { color: var(--ivory); }
+
+  .cat-header__title {
+    font-family: var(--font-display);
+    font-size: clamp(3rem, 8vw, 7rem);
+    font-weight: 300;
+    color: var(--ivory);
+    line-height: 0.95;
+    margin-bottom: 1.5rem;
+  }
+
+  .cat-header__desc {
+    font-family: var(--font-body);
+    font-size: 1rem;
+    color: var(--text-soft);
+    line-height: 1.75;
+    max-width: 560px;
+    margin-bottom: 1rem;
+  }
+
+  .cat-header__count {
+    margin-top: 0.5rem;
+  }

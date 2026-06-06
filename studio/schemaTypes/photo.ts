@@ -40,7 +40,10 @@ export default defineType({
             title: 'Shopify Product Handle',
             description: 'Copia qui lo slug del prodotto Shopify (es. "lupo-nella-neve-stampa")',
             type: 'string',
-            validation: (Rule) => Rule.required(),
+            validation: (Rule) => Rule.required().custom(handle => {
+                if (handle && handle.includes(' ')) return 'L\'handle non può contenere spazi';
+                return true;
+            }),
         }),
         defineField({
             name: 'exif',

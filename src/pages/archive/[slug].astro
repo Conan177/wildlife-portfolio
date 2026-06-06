@@ -1,0 +1,87 @@
+---
+// src/pages/archive/[slug].astro
+import Layout from '../../layouts/Layout.astro';
+import FadeIn from '../../components/astro/FadeIn.astro';
+import { sanityClient } from '../../lib/sanity';
+import { categoriesQuery, categoryBySlugQuery } from '../../lib/queries';
+import type { Category } from '../../types/sanity';
+import '@/styles/category.css';
+
+// getStaticPaths dice ad Astro quante pagine generare al build.
+// Una pagina per ogni categoria presente in Sanity.
+export async function getStaticPaths() {
+  const categories = await sanityClient.fetch<Category[]>(categoriesQuery);
+  return categories.map((category) => ({
+    params: { slug: category.slug },
+    props:  { category },
+  }));
+}
+
+// I dati della categoria specifica arrivano come props —
+// Astro li ha già fetchati in getStaticPaths, non serve un secondo fetch.
+const { category } = Astro.props as { category: Category };
+
+const SHOPIFY_STORE_URL = "https://il-tuo-store.myshopify.com";
+---
+
+<Layout
+  title={`${category.title} | Archive`}
+  description={category.description ?? `Fotografie della categoria ${category.title}`}
+>
+
+  <!-- Header categoria -->
+  <header class="cat-header fade-in">
+    <a href="/archive" class="cat-header__back eyebrow">← Archive</a>
+    <h1 class="cat-header__title">{category.title}</h1>
+    {category.description && (
+      <p class="cat-header__desc">{category.description}</p>
+    )}
+    {category.photoCount && (
+      <p class="cat-header__count eyebrow">{category.photoCount} foto</p>
+    )}
+  </header>
+
+  <!-- Griglia foto — stesso stile della home -->
+  <section class="gallery">
+    <div class="gallery__inner">
+      {category.photos?.map((photo, i) => (
+        <article class={`gallery__item gallery__item--${i % 2 === 1 ? 'offset' : 'normal'} fade-in ${i % 2 === 0 ? 'delay-1' : 'delay-2'}`}>
+          <a
+            href={photo.shopifyHandle
+              ? `${SHOPIFY_STORE_URL}/products/${photo.shopifyHandle}`
+              : `/photo/${photo.slug}`}
+            target={photo.shopifyHandle ? '_blank' : '_self'}
+            rel={photo.shopifyHandle ? 'noopener noreferrer' : undefined}
+            class="gallery__link"
+          >
+            <div class="gallery__img-wrap">
+              <img
+                src={`${photo.imageUrl}?w=1800&auto=format&q=90`}
+                alt={photo.alt || photo.title}
+                class="gallery__img"
+                loading="lazy"
+              />
+              <div class="gallery__overlay">
+                <span class="gallery__overlay-label">
+                  {photo.shopifyHandle ? 'Acquista Stampa →' : 'Vedi foto →'}
+                </span>
+              </div>
+            </div>
+            <div class="gallery__meta">
+              <div class="gallery__meta-left">
+                <h2 class="gallery__title">{photo.title}</h2>
+                <p class="gallery__sub">Fine Art Print</p>
+              </div>
+              {photo.shopifyHandle && (
+                <span class="gallery__cta-text">Shopify →</span>
+              )}
+            </div>
+          </a>
+        </article>
+      ))}
+    </div>
+  </section>
+
+  <FadeIn />
+
+</Layout>

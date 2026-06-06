@@ -1,0 +1,103 @@
+---
+// src/pages/archive.astro
+import Layout from '../layouts/Layout.astro';
+import FadeIn from '../components/astro/FadeIn.astro';
+import { sanityClient } from '../lib/sanity';
+import { categoriesQuery } from '../lib/queries';
+import type { Category } from '../types/sanity';
+import '../styles/archive.css';
+
+
+
+const categories = await sanityClient.fetch<Category[]>(categoriesQuery);
+---
+
+<Layout title="Archive | Portfolio Naturalistico" description="Esplora le categorie fotografiche">
+
+  <!-- Header pagina -->
+  <header class="page-header fade-in">
+    <p class="eyebrow">Collezioni</p>
+    <h1 class="page-header__title">Archive</h1>
+  </header>
+
+  <!-- Slider categorie -->
+  <section class="slider-section">
+    <div class="slider">
+
+      <div class="slider__track" id="slider-track">
+        {categories.map((category) => (
+          <div
+            class="slider__item"
+            style={`background-image: url(${category.coverImageUrl ?? ''})`}
+            data-title={category.title}
+          >
+            <div class="slider__content">
+              <p class="slider__count eyebrow">
+                {category.photoCount ?? 0} foto
+              </p>
+              <h2 class="slider__title">{category.title}</h2>
+              {category.description && (
+                <p class="slider__desc">{category.description}</p>
+              )}
+              <a href={`/archive/${category.slug}`} class="slider__cta">
+                Esplora →
+              </a>
+            </div>
+          </div>
+        ))}
+      </div>
+
+      <!-- Controlli -->
+      <div class="slider__controls">
+        <button class="slider__btn" id="prev" aria-label="Categoria precedente">
+          ←
+        </button>
+        <button class="slider__btn" id="next" aria-label="Categoria successiva">
+          →
+        </button>
+      </div>
+
+    </div>
+  </section>
+
+  <FadeIn />
+
+</Layout>
+
+<script>
+  const track = document.getElementById('slider-track');
+  const prev  = document.getElementById('prev');
+  const next  = document.getElementById('next');
+
+  function getItems() {
+    return track?.querySelectorAll('.slider__item') ?? [];
+  }
+
+  // Rimuove e riaggiunge l'animazione CSS sull'item attivo (index 1)
+  function replayAnimation() {
+    const items = getItems();
+    const active = items[1] as HTMLElement | undefined;
+    if (!active) return;
+    const content = active.querySelector('.slider__content') as HTMLElement | null;
+    if (!content) return;
+    content.style.animation = 'none';
+    // Forza reflow per far ripartire l'animazione
+    void content.offsetHeight;
+    content.style.animation = '';
+  }
+
+  next?.addEventListener('click', () => {
+    const items = getItems();
+    if (items.length === 0) return;
+    track?.appendChild(items[0]);
+    replayAnimation();
+  });
+
+  prev?.addEventListener('click', () => {
+    const items = getItems();
+    if (items.length === 0) return;
+    track?.prepend(items[items.length - 1]);
+    replayAnimation();
+  });
+</script>
+
