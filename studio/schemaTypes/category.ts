@@ -1,8 +1,9 @@
-import { defineField, defineType, validation } from "sanity"
+import { defineField, defineType } from "sanity"
 export default defineType({
     name: 'category',
     title: 'Category',
     type: 'document',
+    icon: () => '📁',
     fields: [
         defineField({
             name: 'title',

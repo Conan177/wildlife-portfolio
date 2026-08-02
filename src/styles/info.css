@@ -1,0 +1,261 @@
+/* src/styles/info.css */
+
+/* =====================================================
+   SEZIONE INFO
+   Layout: due colonne affiancate — testo | carosello
+   ===================================================== */
+.info {
+  min-height: 100svh;
+  display: grid;
+  grid-template-columns: 1fr 1fr;
+  padding-top: var(--navbar-h);
+}
+
+/* =====================================================
+   COLONNA SINISTRA — testo
+   ===================================================== */
+.info__text {
+  padding: 5rem var(--section-px) 5rem calc(var(--section-px) * 1.5);
+  display: flex;
+  flex-direction: column;
+  justify-content: center;
+  gap: 0;
+  border-right: 1px solid var(--border);
+  /* Altezza massima = viewport, scroll interno se il testo è lungo */
+  max-height: calc(100svh - var(--navbar-h));
+  overflow-y: auto;
+  scrollbar-width: none; /* Firefox */
+}
+.info__text::-webkit-scrollbar { display: none; } /* Chrome/Safari */
+
+.info__name {
+  font-family: var(--font-display);
+  font-size: clamp(2.5rem, 5vw, 4.5rem);
+  font-weight: 300;
+  color: var(--ivory);
+  line-height: 1;
+  margin-top: 0.75rem;
+  margin-bottom: 2rem;
+}
+
+/* Citazione — grande, corsivo, dorata */
+.info__quote {
+  font-family: var(--font-display);
+  font-size: clamp(1.2rem, 2.2vw, 1.7rem);
+  font-style: italic;
+  font-weight: 300;
+  color: var(--gold);
+  line-height: 1.5;
+  border: none;
+  padding: 0;
+  margin: 0 0 2rem 0;
+}
+
+.info__divider {
+  width: 2.5rem;
+  height: 1px;
+  background: var(--gold);
+  opacity: 0.6;
+  margin-bottom: 2rem;
+}
+
+/* Bio — paragrafi */
+.info__bio {
+  display: flex;
+  flex-direction: column;
+  gap: 1rem;
+  margin-bottom: 2.5rem;
+}
+.info__bio p {
+  font-family: var(--font-body);
+  font-size: 0.95rem;
+  color: var(--text-soft);
+  line-height: 1.85;
+}
+
+/* Contatti */
+.info__contacts {
+  display: flex;
+  flex-direction: column;
+  gap: 0.75rem;
+  padding-top: 1.8rem;
+  border-top: 1px solid var(--border);
+  margin-bottom: 2rem;
+}
+
+.info__contact-item {
+  display: flex;
+  flex-direction: column;
+  gap: 0.2rem;
+  text-decoration: none;
+  color: inherit;
+}
+a.info__contact-item:hover .info__contact-value {
+  color: var(--gold);
+}
+
+.info__contact-label {
+  font-family: var(--font-body);
+  font-size: 0.55rem;
+  letter-spacing: 0.25em;
+  text-transform: uppercase;
+  color: var(--gold);
+}
+.info__contact-value {
+  font-family: var(--font-body);
+  font-size: 0.9rem;
+  color: var(--text);
+  transition: color 0.2s;
+}
+
+/* Social — link in fila, stile underline dorato */
+.info__socials {
+  display: flex;
+  gap: 1.5rem;
+  flex-wrap: wrap;
+}
+.info__social-link {
+  font-family: var(--font-body);
+  font-size: 0.6rem;
+  letter-spacing: 0.2em;
+  text-transform: uppercase;
+  color: var(--text-muted);
+  text-decoration: none;
+  border-bottom: 1px solid var(--border);
+  padding-bottom: 2px;
+  transition: color 0.2s, border-color 0.2s;
+}
+.info__social-link:hover {
+  color: var(--gold);
+  border-color: var(--gold);
+}
+
+/* =====================================================
+   COLONNA DESTRA — carosello verticale automatico
+   ===================================================== */
+.info__carousel {
+  position: relative;
+  /* Altezza fissa = viewport meno navbar, overflow nascosto */
+  height: calc(100svh - var(--navbar-h));
+  overflow: hidden;
+  /* Fade top e bottom per un effetto di dissolvenza elegante */
+  -webkit-mask-image: linear-gradient(
+    to bottom,
+    transparent 0%,
+    black 8%,
+    black 92%,
+    transparent 100%
+  );
+  mask-image: linear-gradient(
+    to bottom,
+    transparent 0%,
+    black 8%,
+    black 92%,
+    transparent 100%
+  );
+}
+
+/* Il track scorre verso l'alto in loop infinito.
+   La durata dipende dal numero di foto — più foto = più lento.
+   Regola --carousel-duration se lo vuoi più veloce o lento. */
+.info__carousel-track {
+  display: flex;
+  flex-direction: column;
+  gap: 1rem;
+  padding: 1rem;
+  animation: scrollUp var(--carousel-duration, 30s) linear infinite;
+}
+
+
+.info__carousel-item {
+  width: 100%;
+  flex-shrink: 0;
+}
+
+.info__carousel-img {
+  width: 100%;
+  height: auto;
+  display: block;
+  /* Leggera desaturazione — stessa della foto about */
+  filter: grayscale(10%);
+  transition: filter 0.4s ease;
+}
+.info__carousel-item:hover .info__carousel-img {
+  filter: grayscale(0%);
+}
+
+/* =====================================================
+   ANIMAZIONE SCROLL
+   Sposta il track verso l'alto del 50% (= prima passata).
+   Quando arriva a metà, il secondo gruppo identico è
+   già in posizione — l'occhio non vede lo "scatto".
+   ===================================================== */
+@keyframes scrollUp {
+  from { transform: translateY(0); }
+  to   { transform: translateY(-50%); }
+}
+
+/* =====================================================
+   RESPONSIVE
+   ===================================================== */
+@media (max-width: 900px) {
+  .info {
+    grid-template-columns: 1fr;
+    min-height: auto;
+  }
+
+  .info__text {
+    max-height: none;
+    overflow-y: visible;
+    border-right: none;
+    border-bottom: 1px solid var(--border);
+    padding: 4rem var(--section-px);
+  }
+
+  /* Il carosello su mobile diventa orizzontale */
+  .info__carousel {
+    height: 60vw;
+    -webkit-mask-image: linear-gradient(
+      to right,
+      transparent 0%,
+      black 8%,
+      black 92%,
+      transparent 100%
+    );
+    mask-image: linear-gradient(
+      to right,
+      transparent 0%,
+      black 8%,
+      black 92%,
+      transparent 100%
+    );
+  }
+
+  .info__carousel-track {
+    flex-direction: row;
+    padding: 1rem;
+    animation: scrollLeft var(--carousel-duration, 30s) linear infinite;
+  }
+
+  .info__carousel-item {
+    width: 60vw;
+     /* Altezza fissa uniforme — evita salti quando le foto
+       hanno proporzioni diverse tra loro */
+    aspect-ratio: 4 / 5;
+    flex-shrink: 0;
+    overflow: hidden;
+  }
+
+  /* Su mobile l'immagine riempie la card fissa invece di
+     mantenere le proporzioni originali (evita salti di altezza) */
+  .info__carousel-item .info__carousel-img {
+    width: 100%;
+    height: 100%;
+    object-fit: cover;
+  }
+
+  @keyframes scrollLeft {
+    from { transform: translateX(0); }
+    to   { transform: translateX(-50%); }
+  }
+}

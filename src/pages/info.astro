@@ -1,0 +1,143 @@
+---
+// src/pages/info.astro
+import Layout from '../layouts/Layout.astro';
+import FadeIn from '../components/astro/FadeIn.astro';
+import { sanityClient } from '../lib/sanity';
+import { infoPageQuery, settingsQuery } from '../lib/queries';
+import type { InfoPage, SiteSettings } from '../types/sanity';
+import '@/styles/info.css';
+
+const [infoPage, settings] = await Promise.all([
+  sanityClient.fetch<InfoPage>(infoPageQuery),
+  sanityClient.fetch<SiteSettings>(settingsQuery),
+]);
+---
+
+<Layout title="Info | Portfolio Naturalistico" description="Scopri di più sul fotografo e il progetto">
+
+  <section class="info">
+
+    <!-- ===== COLONNA SINISTRA: testo ===== -->
+    <div class="info__text fade-in">
+
+      <p class="eyebrow">Chi sono</p>
+
+      <h1 class="info__name">
+        {settings?.photographerName}
+      </h1>
+
+      {infoPage?.quote && (
+        <blockquote class="info__quote">
+          <span>"{infoPage.quote}"</span>
+        </blockquote>
+      )}
+
+      <div class="info__divider"></div>
+
+      <div class="info__bio">
+        {infoPage?.bioExtended?.map((paragraph) => (
+          <p>{paragraph}</p>
+        ))}
+      </div>
+
+      <!-- Contatti -->
+      <div class="info__contacts">
+        {settings?.email && (
+          <a href={`mailto:${settings.email}`} class="info__contact-item">
+            <span class="info__contact-label">Email</span>
+            <span class="info__contact-value">{settings.email}</span>
+          </a>
+        )}
+        {settings?.baseCity && (
+          <div class="info__contact-item">
+            <span class="info__contact-label">Base</span>
+            <span class="info__contact-value">{settings.baseCity}</span>
+          </div>
+        )}
+      </div>
+
+      <!-- Social -->
+      {(settings?.instagram || settings?.linkedin || settings?.facebook) && (
+        <div class="info__socials">
+          {settings.instagram && (
+            <a
+              href={`https://instagram.com/${settings.instagram}`}
+              target="_blank"
+              rel="noopener noreferrer"
+              class="info__social-link"
+            >
+              Instagram
+            </a>
+          )}
+          {settings.linkedin && (
+            <a
+              href={`https://linkedin.com/in/${settings.linkedin}`}
+              target="_blank"
+              rel="noopener noreferrer"
+              class="info__social-link"
+            >
+              LinkedIn
+            </a>
+          )}
+          {settings.facebook && (
+            <a
+              href={`https://facebook.com/${settings.facebook}`}
+              target="_blank"
+              rel="noopener noreferrer"
+              class="info__social-link"
+            >
+              Facebook
+            </a>
+          )}
+        </div>
+      )}
+
+    </div>
+
+    <!-- ===== COLONNA DESTRA: carosello ===== -->
+    {infoPage?.backstagePhotos && infoPage.backstagePhotos.length > 0 && (
+      <div class="info__carousel">
+        <div class="info__carousel-track">
+          <!-- Prima passata -->
+          {infoPage.backstagePhotos.map((photo) => (
+            <div class="info__carousel-item">
+              <img
+                src={`${photo.imageUrl}?w=1200&q=85&auto=format`}
+                srcset={`
+                  ${photo.imageUrl}?w=600&q=80&auto=format 600w,
+                  ${photo.imageUrl}?w=1200&q=85&auto=format 1200w,
+                  ${photo.imageUrl}?w=1800&q=85&auto=format 1800w
+                `}
+                sizes="(max-width: 900px) 100vw, 50vw"
+                alt={photo.alt || photo.title}
+                class="info__carousel-img"
+                loading="lazy"
+              />
+            </div>
+          ))}
+          <!-- Seconda passata identica — crea il loop infinito -->
+          {infoPage.backstagePhotos.map((photo) => (
+            <div class="info__carousel-item">
+              <img
+                src={`${photo.imageUrl}?w=1200&q=85&auto=format`}
+                srcset={`
+                  ${photo.imageUrl}?w=600&q=80&auto=format 600w,
+                  ${photo.imageUrl}?w=1200&q=85&auto=format 1200w,
+                  ${photo.imageUrl}?w=1800&q=85&auto=format 1800w
+                `}
+                sizes="(max-width: 900px) 100vw, 50vw"
+                alt={photo.alt || photo.title}
+                class="info__carousel-img"
+                loading="lazy"
+              />
+            </div>
+          ))}
+        </div>
+      </div>
+    )}
+
+  </section>
+
+  <FadeIn />
+
+</Layout>

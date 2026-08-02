@@ -5,7 +5,7 @@ export interface Photo {
   slug: string;
   imageUrl: string;
   alt?: string;
-  shopifyHandle: string;
+  shopifyHandle?: string;
   description?: string;
   // Definiamo anche l'oggetto EXIF per il futuro
   exif?: {
@@ -17,18 +17,22 @@ export interface Photo {
   };
 }
 
+export interface HomePage {
+  photos?: Photo[];
+}
+
 export interface SiteSettings {
-  photographerName: string;
-  yearsOfExperience: number;
-  baseCity: string;
-  email: string;
-  instagramHandle?: string;
-  facebookHandle?: string;
-  linkedInHandle?: string;
-  bioHeading: string;
-  bioHeadingEm: string;
-  bio: string;
-  portraitUrl: string;
+  photographerName: string;        
+  yearsOfExperience?: number;      
+  baseCity?: string;               
+  email?: string;                  
+  instagram?: string;
+  facebook?: string;
+  linkedin?: string;               
+  bioHeading?: string;             
+  bioHeadingEm?: string;           
+  bio: string[];                   
+  portraitUrl: string;            
   portraitAlt?: string;
 }
 
@@ -40,4 +44,10 @@ export interface Category {
   description?: string;
   photoCount?: number;
   photos?: Photo[];
+}
+
+export interface InfoPage {
+    quote?: string;
+    bioExtended?: string[];
+    backstagePhotos?: Photo[];
 }

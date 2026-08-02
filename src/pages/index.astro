@@ -3,14 +3,14 @@
 import Layout from '../layouts/Layout.astro';
 import FadeIn from '../components/astro/FadeIn.astro';
 import { sanityClient } from '../lib/sanity';
-import { photosQuery, settingsQuery } from '../lib/queries';
-import type { Photo, SiteSettings } from '../types/sanity';
+import { homePageQuery, settingsQuery } from '../lib/queries';
+import type { HomePage, SiteSettings } from '../types/sanity';
 
 
 
-const [photos, settings] = await Promise.all([
-  sanityClient.fetch<Photo[]>(photosQuery),
-  sanityClient.fetch<any>(settingsQuery),
+const [homePage, settings] = await Promise.all([
+  sanityClient.fetch<HomePage>(homePageQuery),
+  sanityClient.fetch<SiteSettings>(settingsQuery),
 ]);
 
 const SHOPIFY_STORE_URL = "https://il-tuo-store.myshopify.com";
@@ -36,7 +36,7 @@ const SHOPIFY_STORE_URL = "https://il-tuo-store.myshopify.com";
   <!-- ===================== GALLERY ===================== -->
   <section class="gallery">
     <div class="gallery__inner">
-      {photos.map((photo, i) => (
+      {homePage?.photos?.map((photo, i) => (
         <!--
           Ogni card ha fade-in.
           Le colonne hanno delay alternati così la coppia
@@ -46,9 +46,11 @@ const SHOPIFY_STORE_URL = "https://il-tuo-store.myshopify.com";
         -->
         <article class={`gallery__item gallery__item--${i % 2 === 1 ? 'offset' : 'normal'} fade-in ${i % 2 === 0 ? 'delay-1' : 'delay-2'}`}>
           <a
-            href={`${SHOPIFY_STORE_URL}/products/${photo.shopifyHandle}`}
-            target="_blank"
-            rel="noopener noreferrer"
+            href={photo.shopifyHandle
+              ? `${SHOPIFY_STORE_URL}/products/${photo.shopifyHandle}`
+              : `/photo/${photo.slug}`}
+            target={photo.shopifyHandle ? '_blank' : '_self'}
+            rel={photo.shopifyHandle ? 'noopener noreferrer' : undefined}
             class="gallery__link"
           >
             <div class="gallery__img-wrap">
@@ -72,7 +74,6 @@ const SHOPIFY_STORE_URL = "https://il-tuo-store.myshopify.com";
             <div class="gallery__meta">
               <div class="gallery__meta-left">
                 <h2 class="gallery__title">{photo.title}</h2>
-                <p class="gallery__sub">Fine Art Print</p>
               </div>
               <span class="gallery__cta-text">Shopify →</span>
             </div>

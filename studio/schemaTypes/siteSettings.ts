@@ -19,7 +19,7 @@ export default defineType({
 
     defineField({
       name: 'tagline',
-      title: 'Tagline (sotto il nome nella navbar)',
+      title: 'Tag Line (sotto il nome nella navbar)',
       description: 'Es. "Naturalist & Explorer"',
       type: 'string',
     }),

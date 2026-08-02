@@ -64,6 +64,24 @@
     background: rgba(10, 10, 10, 0.5);
   }
 
+  .slider__item:nth-child(2)::after {
+    content: '';
+    position: absolute;
+    inset: 0;
+    background: linear-gradient(
+      to right,
+      rgba(10, 10, 10, 0.75) 0%,
+      rgba(10, 10, 10, 0.45) 35%,
+      rgba(10, 10, 10, 0.1) 65%,
+      transparent 100%
+    );
+    pointer-events: none;
+  }
+
+  .slider__item:nth-child(2) .slider__content {
+    z-index: 1;
+  }
+
   /* Card destra 3, 4, 5 */
   .slider__item:nth-child(3) { left: 50%; }
   .slider__item:nth-child(4) { left: calc(50% + 200px); }
@@ -155,7 +173,7 @@
   .slider__btn {
     width: 42px;
     height: 38px;
-    background: transparent;
+    background: var(--bg);
     border: 1px solid var(--border);
     color: var(--ivory);
     font-size: 1rem;
