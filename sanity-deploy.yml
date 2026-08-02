@@ -1,0 +1,47 @@
+# .github/workflows/sanity-deploy.yml
+#
+# Deploya Sanity Studio automaticamente ogni volta che
+# viene fatto push sul branch main, ma solo se sono cambiati
+# file dentro la cartella studio/.
+#
+# Il build gira su una macchina remota GitHub — evita
+# completamente il problema di RAM insufficiente in locale.
+
+name: Deploy Sanity Studio
+
+on:
+  push:
+    branches:
+      - main
+    paths:
+      - 'studio/**'          # scatta solo se cambia qualcosa nello studio
+  workflow_dispatch:         # permette anche l'avvio manuale da GitHub
+
+jobs:
+  deploy-studio:
+    runs-on: ubuntu-latest
+
+    # Se lo studio è in una sottocartella del repo (come nel tuo caso),
+    # tutti i comandi girano da lì
+    defaults:
+      run:
+        working-directory: ./studio
+
+    steps:
+      - name: Checkout del repository
+        uses: actions/checkout@v4
+
+      - name: Setup Node.js
+        uses: actions/setup-node@v4
+        with:
+          node-version: '20'
+          cache: 'npm'
+          cache-dependency-path: studio/package-lock.json
+
+      - name: Installa le dipendenze
+        run: npm ci
+
+      - name: Deploy su Sanity
+        env:
+          SANITY_AUTH_TOKEN: ${{ secrets.SANITY_AUTH_TOKEN }}
+        run: npx sanity deploy --yes

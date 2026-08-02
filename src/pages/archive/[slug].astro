@@ -21,7 +21,7 @@ export async function getStaticPaths() {
 // Astro li ha già fetchati in getStaticPaths, non serve un secondo fetch.
 const { category } = Astro.props as { category: Category };
 
-const SHOPIFY_STORE_URL = "https://il-tuo-store.myshopify.com";
+const SHOPIFY_STORE_URL = "https://tommiphoto.myshopify.com";
 ---
 
 <Layout
@@ -70,7 +70,6 @@ const SHOPIFY_STORE_URL = "https://il-tuo-store.myshopify.com";
             <div class="gallery__meta">
               <div class="gallery__meta-left">
                 <h2 class="gallery__title">{photo.title}</h2>
-                <p class="gallery__sub">Fine Art Print</p>
               </div>
               {photo.shopifyHandle && (
                 <span class="gallery__cta-text">Shopify →</span>
