@@ -163,7 +163,7 @@ a.info__contact-item:hover .info__contact-value {
   flex-direction: column;
   gap: 1rem;
   padding: 1rem;
-  animation: scrollUp var(--carousel-duration, 20s) linear infinite;
+  animation: scrollUp var(--carousel-duration, 30s) linear infinite;
 }
 
 
@@ -234,7 +234,7 @@ a.info__contact-item:hover .info__contact-value {
   .info__carousel-track {
     flex-direction: row;
     padding: 1rem;
-    animation: scrollLeft var(--carousel-duration, 30s) linear infinite;
+    animation: scrollLeft var(--carousel-duration-mobile, 10s) linear infinite;
   }
 
   .info__carousel-item {
