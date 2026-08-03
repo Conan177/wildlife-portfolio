@@ -1,0 +1,106 @@
+---
+// src/components/astro/Marquee.astro
+//
+// Script che rende il loop del carosello "info" davvero seamless.
+//
+// Perché serve: l'animazione CSS con translateX(-50%) assume che
+// le due metà del nastro (originale + duplicato) abbiano ESATTAMENTE
+// la stessa larghezza in pixel. In teoria è sempre vero perché il
+// contenuto è identico, ma quando le larghezze sono espresse in vw
+// mischiate a gap in rem, il browser arrotonda i due gruppi in modo
+// leggermente diverso — l'errore si accumula e diventa uno scatto
+// visibile, sempre nello stesso punto del giro.
+//
+// La fix: misuriamo la larghezza REALE della prima metà con JS
+// (offsetWidth, sempre un numero intero di pixel accurato) e la
+// usiamo per pilotare l'animazione con requestAnimationFrame,
+// invece di affidarci al calcolo percentuale del CSS.
+---
+
+<script>
+  function initMarquee(track: HTMLElement) {
+    const items = Array.from(track.children) as HTMLElement[];
+    const half = items.length / 2;
+    if (half === 0) return;
+
+    // Larghezza/altezza reale della prima metà — questo è il
+    // punto esatto dove il loop deve "resettarsi" senza scatti
+    function getLoopDistance(vertical: boolean) {
+      const lastOfFirstHalf = items[half - 1];
+      const firstOfSecondHalf = items[half];
+      if (vertical) {
+        return firstOfSecondHalf.offsetTop - items[0].offsetTop;
+      }
+      return firstOfSecondHalf.offsetLeft - items[0].offsetLeft;
+    }
+
+    const vertical = window.matchMedia('(min-width: 641px)').matches;
+    let distance = getLoopDistance(vertical);
+
+    // Velocità in pixel al secondo — derivata dalla durata che
+    // avevi impostato in CSS, così il comportamento resta simile
+    const durationSeconds = vertical ? 18 : 10;
+    const speed = distance / durationSeconds;
+
+    let position = 0;
+    let lastTime: number | null = null;
+
+    function frame(time: number) {
+      if (lastTime === null) lastTime = time;
+      const delta = (time - lastTime) / 1000;
+      lastTime = time;
+
+      position += speed * delta;
+
+      // Reset esatto e pixel-perfect quando raggiungiamo la
+      // distanza reale misurata — nessun arrotondamento residuo
+      if (position >= distance) {
+        position -= distance;
+      }
+
+      const transform = vertical
+        ? `translateY(${-position}px)`
+        : `translateX(${-position}px)`;
+
+      track.style.transform = transform;
+      requestAnimationFrame(frame);
+    }
+
+    requestAnimationFrame(frame);
+  }
+
+  // Disattiva l'animazione CSS di fallback e attiva quella JS
+  // solo dopo che le immagini sono pronte, così le misure sono corrette
+  function setup() {
+    const track = document.getElementById('info-carousel-track');
+    if (!track) return;
+
+    track.style.animation = 'none';
+
+    const images = Array.from(track.querySelectorAll('img'));
+    const pending = images.filter((img) => !img.complete);
+
+    if (pending.length === 0) {
+      initMarquee(track);
+      return;
+    }
+
+    let loaded = 0;
+    pending.forEach((img) => {
+      img.addEventListener('load', () => {
+        loaded++;
+        if (loaded === pending.length) initMarquee(track);
+      });
+      img.addEventListener('error', () => {
+        loaded++;
+        if (loaded === pending.length) initMarquee(track);
+      });
+    });
+  }
+
+  if (document.readyState === 'loading') {
+    document.addEventListener('DOMContentLoaded', setup);
+  } else {
+    setup();
+  }
+</script>

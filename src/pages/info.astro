@@ -2,6 +2,7 @@
 // src/pages/info.astro
 import Layout from '../layouts/Layout.astro';
 import FadeIn from '../components/astro/FadeIn.astro';
+import Marquee from '../components/astro/Marquee.astro';
 import { sanityClient } from '../lib/sanity';
 import { infoPageQuery, settingsQuery } from '../lib/queries';
 import type { InfoPage, SiteSettings } from '../types/sanity';
@@ -97,8 +98,15 @@ const [infoPage, settings] = await Promise.all([
     <!-- ===== COLONNA DESTRA: carosello ===== -->
     {infoPage?.backstagePhotos && infoPage.backstagePhotos.length > 0 && (
       <div class="info__carousel">
-        <div class="info__carousel-track">
-          <!-- Prima passata -->
+        <div class="info__carousel-track" id="info-carousel-track">
+          <!--
+            Prima passata.
+            NIENTE loading="lazy" qui: sono poche miniature sempre
+            visibili nella colonna. Se caricate in lazy, un'immagine
+            può finire di scaricarsi MENTRE l'animazione CSS è in corso,
+            cambiando leggermente la larghezza reale del track a runtime
+            e causando lo scatto che hai notato su mobile.
+          -->
           {infoPage.backstagePhotos.map((photo) => (
             <div class="info__carousel-item">
               <img
@@ -133,9 +141,10 @@ const [infoPage, settings] = await Promise.all([
         </div>
       </div>
     )}
-
+ 
   </section>
-
+ 
   <FadeIn />
-
+  <Marquee />
+ 
 </Layout>

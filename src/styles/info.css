@@ -215,37 +215,43 @@ a.info__contact-item:hover .info__contact-value {
   /* Il carosello su mobile diventa orizzontale */
   .info__carousel {
     height: 60vw;
-    -webkit-mask-image: linear-gradient(
-      to right,
-      transparent 0%,
-      black 8%,
-      black 92%,
-      transparent 100%
-    );
-    mask-image: linear-gradient(
-      to right,
-      transparent 0%,
-      black 8%,
-      black 92%,
-      transparent 100%
-    );
   }
-
+ 
+  /* Overlay orizzontale — stessa logica del desktop ma sui lati */
+  .info__carousel::before,
+  .info__carousel::after {
+    top: 0;
+    bottom: 0;
+    left: auto;
+    right: auto;
+    width: 15%;
+    height: auto;
+  }
+  .info__carousel::before {
+    left: 0;
+    background: linear-gradient(to right, var(--bg) 0%, transparent 100%);
+  }
+  .info__carousel::after {
+    right: 0;
+    left: auto;
+    background: linear-gradient(to left, var(--bg) 0%, transparent 100%);
+  }
+ 
   .info__carousel-track {
     flex-direction: row;
     padding: 1rem;
     animation: scrollLeft var(--carousel-duration-mobile, 10s) linear infinite;
   }
-
+ 
   .info__carousel-item {
     width: 60vw;
-     /* Altezza fissa uniforme — evita salti quando le foto
+    /* Altezza fissa uniforme — evita salti quando le foto
        hanno proporzioni diverse tra loro */
     aspect-ratio: 4 / 5;
     flex-shrink: 0;
     overflow: hidden;
   }
-
+ 
   /* Su mobile l'immagine riempie la card fissa invece di
      mantenere le proporzioni originali (evita salti di altezza) */
   .info__carousel-item .info__carousel-img {
@@ -253,9 +259,10 @@ a.info__contact-item:hover .info__contact-value {
     height: 100%;
     object-fit: cover;
   }
-
+ 
   @keyframes scrollLeft {
     from { transform: translateX(0); }
     to   { transform: translateX(-50%); }
   }
+
 }
