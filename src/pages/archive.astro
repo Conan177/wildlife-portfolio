@@ -25,26 +25,31 @@ const categories = await sanityClient.fetch<Category[]>(categoriesQuery);
     <div class="slider">
 
       <div class="slider__track" id="slider-track">
-        {categories.map((category) => (
-          <div
-            class="slider__item"
-            style={`background-image: url(${category.coverImageUrl ?? ''})`}
-            data-title={category.title}
-          >
-            <div class="slider__content">
-              <p class="slider__count eyebrow">
-                {category.photoCount ?? 0} foto
-              </p>
-              <h2 class="slider__title">{category.title}</h2>
-              {category.description && (
-                <p class="slider__desc">{category.description}</p>
-              )}
-              <a href={`/archive/${category.slug}`} class="slider__cta">
-                Esplora →
-              </a>
+        {categories.map((category) => {
+          const bgPosition = category.coverImageHotspot
+            ? `${category.coverImageHotspot.x * 100}% ${category.coverImageHotspot.y * 100}%`
+            : 'center';
+          return (
+            <div
+              class="slider__item"
+              style={`background-image: url(${category.coverImageUrl ?? ''}); background-position: ${bgPosition};`}
+              data-title={category.title}
+            >
+              <div class="slider__content">
+                <p class="slider__count eyebrow">
+                  {category.photoCount ?? 0} foto
+                </p>
+                <h2 class="slider__title">{category.title}</h2>
+                {category.description && (
+                  <p class="slider__desc">{category.description}</p>
+                )}
+                <a href={`/archive/${category.slug}`} class="slider__cta">
+                  Esplora →
+                </a>
+              </div>
             </div>
-          </div>
-        ))}
+          );
+        })}
       </div>
 
       <!-- Controlli -->

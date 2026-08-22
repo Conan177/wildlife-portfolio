@@ -82,24 +82,11 @@
     z-index: 1;
   }
 
-  /* Card destra 3, 4, 5 */
-  .slider__item:nth-child(3) { left: 50%; }
-  .slider__item:nth-child(4) { left: calc(50% + 200px); }
-  .slider__item:nth-child(5) { left: calc(50% + 400px); }
-
-  /* Dalla 6a in poi: nascoste a destra */
-  .slider__item:nth-child(n+6) {
+  /* Dalla 3a in poi: fuori vista, restano nel DOM solo per il riordino via JS */
+  .slider__item:nth-child(n+3) {
     left: calc(50% + 600px);
     opacity: 0;
     pointer-events: none;
-  }
-
-  /* Bordo dorato sottile sulle card laterali */
-  .slider__item:nth-child(n+3) {
-    outline: 1px solid var(--border);
-  }
-  .slider__item:nth-child(n+3):hover {
-    outline-color: var(--gold);
   }
 
   /* ---- Contenuto testuale (visibile solo sul 2° item) ---- */
@@ -210,9 +197,4 @@
       left: var(--section-px);
       max-width: calc(100% - 3rem);
     }
-
-    /* Su mobile le card laterali sono più strette */
-    .slider__item:nth-child(3) { left: 55%; width: 140px; }
-    .slider__item:nth-child(4) { left: calc(55% + 150px); width: 140px; }
-    .slider__item:nth-child(n+5) { opacity: 0; pointer-events: none; }
   }

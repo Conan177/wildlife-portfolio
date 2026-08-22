@@ -36,11 +36,17 @@ export interface SiteSettings {
   portraitAlt?: string;
 }
 
+export interface Hotspot {
+  x: number;
+  y: number;
+}
+
 export interface Category {
   title: string;
   slug: string;
   coverImageUrl?: string;
   coverImageAlt?: string;
+  coverImageHotspot?: Hotspot;
   description?: string;
   photoCount?: number;
   photos?: Photo[];

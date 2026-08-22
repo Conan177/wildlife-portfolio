@@ -36,6 +36,7 @@ export const categoriesQuery = `*[_type == "category" ] | order(title asc){
   "slug": slug.current,
   "coverImageUrl": coverImage.asset->url,
   "coverImageAlt": coverImage.alt,
+  "coverImageHotspot": coverImage.hotspot,
   description,
   "photoCount": count(photos),
   photos[]->{
